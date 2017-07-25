@@ -29,9 +29,11 @@ def EV_F(X, k_init, n_agents):
 
 # V infinity
 def V_INFINITY(k=[]):
-    e=np.ones(len(k))
-    c=output_f(k,e)
-    v_infinity=utility(c,e)/(1-beta)
+    v_infinity = 0
+    for i in range(len(thetas)):
+        e=np.ones(len(k))
+        c=output_f(theta[i], k,e)
+        v_infinity+= probabilities[i] * utility(c,e)/(1-beta)
     return v_infinity
 
 #=======================================================================
@@ -137,9 +139,12 @@ def EV_G(X, k_init, n_agents):
         G[i+2*n_agents]=inv[i]
     
     
-    f_prod=output_f(k_init, lab)
+    exp_f_prod = 0
+    for i in range(len(thetas)):
+        f_prod=output_f(thetas[i], k_init, lab)
+        exp_f_prod += probabilities[i] * f_prod
     Gamma_adjust=0.5*zeta*k_init*((inv/k_init - delta)**2.0)
-    sectors_sum=cons + inv - delta*k_init - (f_prod - Gamma_adjust)
+    sectors_sum=cons + inv - delta*k_init - (exp_f_prod - Gamma_adjust)
     G[3*n_agents]=np.sum(sectors_sum)
     
     return G
@@ -164,10 +169,12 @@ def EV_G_ITER(X, k_init, n_agents):
         G[i + n_agents]=lab[i]
         G[i+2*n_agents]=inv[i]
     
-    
-    f_prod=output_f(k_init, lab)
+    exp_f_prod = 0
+    for i in range(len(thetas)):
+        f_prod=output_f(thetas[i], k_init, lab)
+        exp_f_prod += probabilities[i] * f_prod
     Gamma_adjust=0.5*zeta*k_init*((inv/k_init - delta)**2.0)
-    sectors_sum=cons + inv - delta*k_init - (f_prod - Gamma_adjust)
+    sectors_sum=cons + inv - delta*k_init - (exp_f_prod - Gamma_adjust)
     G[3*n_agents]=np.sum(sectors_sum)
     
     return G

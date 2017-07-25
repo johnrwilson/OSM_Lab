@@ -17,6 +17,8 @@ import numpy as np
 iDepth=1
 iOut=1         # how many outputs
 which_basis = 1 #linear basis function (2: quadratic local basis)
+refinement_level = 3
+fTol = 1.E-5
 
 # control of iterations
 numstart = 0   # which is iteration to start (numstart = 0: start from scratch, number=/0: restart)
@@ -31,14 +33,19 @@ No_samples = 1000
 
 n_agents=2  # number of continuous dimensions of the model
 
-beta=0.8
-rho=0.95
-zeta=0.5
+beta=0.6
+rho=0.9
+zeta=0.52
 psi=0.36
 gamma=2.0
-delta=0.025
+delta=0.03
 eta=1
 big_A=(1.0-beta)/(psi*beta)
+
+# Variables for stochastic process
+thetas = [0.9, 0.95, 1.0, 1.05, 1.1]
+probabilities = [.2, .2, .2, .2, .2]
+
 
 # Ranges For States
 range_cube=1 # range of [0..1]^d in 1D

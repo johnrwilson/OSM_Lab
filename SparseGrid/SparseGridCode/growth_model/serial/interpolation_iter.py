@@ -48,6 +48,15 @@ def sparse_grid_iter(n_agents, iDepth, valold):
     file.close()
     grid.loadNeededPoints(aVals)
     
+    for iK in range(refinement_level):
+        grid.setSurplusRefinement(fTol, 1, "fds")
+        aPoints = grid.getNeededPoints()
+        aVals = np.empty([aPoints.shape[0], 1])
+        for iI in range(aPoints.shape[0]):
+            aVals[iI] = solveriter.iterate(aPoints[iI], n_agents, valold)[0]
+        grid.loadNeededPoints(aVals)
+
+
     f=open("grid_iter.txt", 'w')
     np.savetxt(f, aPoints, fmt='% 2.16f')
     f.close()
