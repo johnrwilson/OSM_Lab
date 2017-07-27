@@ -69,6 +69,58 @@ double monte_carlo_put_price(const int& num_sims, const double& S, const double&
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+
+
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Pricing an Asian vanilla call option with a Monte Carlo method
+
+double monte_carlo_call_asian(const int& num_sims, const int& num_periods, const double& S, const double& K, const double& r, const double& v, const double& T) {
+
+  double S_cur = 0.0;
+  double payoff_sum = 0.0;
+  double per_length = T / num_periods;
+  double S_prev = S;
+
+  for (int i=0; i<num_sims; i++) {
+    double sbar = 0.0;
+    for (int j=0; j<num_periods; j++) {
+      double gauss_bm = gaussian_box_muller();
+      S_cur = S_prev * exp(sqrt(v*v*per_length)*gauss_bm+(r - 0.5*v*v)*per_length);
+      sbar += S_cur;
+      S_prev = S_cur;
+    };
+    payoff_sum += std::max(sbar / num_periods - K, 0.0);
+  };
+
+  return (payoff_sum / static_cast<double>(num_sims)) * exp(-r*T);
+}
+
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Pricing an Asian vanilla put option with a Monte Carlo method
+
+double monte_carlo_put_asian(const int& num_sims, const int& num_periods, const double& S, const double& K, const double& r, const double& v, const double& T) {
+  double S_cur = 0.0;
+  double payoff_sum = 0.0;
+  double per_length = T / num_periods;
+  double S_prev = S;
+
+  for (int i=0; i<num_sims; i++) {
+    double sbar = 0.0;
+    for (int j=0; j<num_periods; j++) {
+      double gauss_bm = gaussian_box_muller();
+      S_cur = S_prev * exp(sqrt(v*v*per_length)*gauss_bm+(r - 0.5*v*v)*per_length);
+      sbar += S_cur;
+      S_prev = S_cur;
+    };
+    payoff_sum += std::max(K - sbar / num_periods, 0.0);
+  };
+
+  return (payoff_sum / static_cast<double>(num_sims)) * exp(-r*T);
+}
+
+// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
 int main(int argc, char **argv) {
 
   // Parameters                                                                             
